@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { signIn } from 'next-auth/react';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
+import { toast } from 'react-hot-toast'; // Import toast
 
 export default function Register() {
   const [name, setName] = useState('');
@@ -30,11 +31,12 @@ export default function Register() {
         router.push(`/complete-profile?email=${encodeURIComponent(data.email)}`);
       } else {
         console.error('Registration error:', data);
-        setError(data.message || 'Registration failed');
+        // Display error message as a toast
+        toast.error(data.message || 'Registration failed');
       }
     } catch (error) {
       console.error('Registration error:', error);
-      setError('An error occurred during registration');
+      toast.error('An error occurred during registration');
     }
   };
 

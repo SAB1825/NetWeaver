@@ -1,31 +1,24 @@
 import { NextResponse } from 'next/server';
-import bcrypt from 'bcryptjs';
-import dbConnect from '@/lib/mongodb-adapter';
+import dbConnect from '@/lib/mongoose';
 import User from '@/models/User.schema';
 
 export async function POST(req) {
   try {
-    const { name, email, password } = await req.json();
+    const { name, email, bio } = await req.json();
     await dbConnect();
 
     const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return NextResponse.json({ message: 'User already exists' }, { status: 400 });
+    if (!existingUser) {
+      return NextResponse.json({ message: 'User not found' }, { status: 404 });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 12);
+    existingUser.name = name;
+    existingUser.bio = bio;
+    await existingUser.save();
 
-    const newUser = new User({
-      name,
-      email,
-      password: hashedPassword,
-    });
-
-    await newUser.save();
-
-    return NextResponse.json({ message: 'Profile completed successfully' }, { status: 201 });
+    return NextResponse.json({ message: 'Profile completed successfully' }, { status: 200 });
   } catch (error) {
     console.error('Profile completion error:', error);
-    return NextResponse.json({ message: 'An error occurred during profile completion' }, { status: 500 });
+    return NextResponse.json({ message: 'An error occurred during profile completion', error: error.toString() }, { status: 500 });
   }
 }
