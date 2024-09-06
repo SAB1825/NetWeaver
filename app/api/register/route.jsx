@@ -34,7 +34,7 @@ export async function POST(req) {
     const savedUser = await newUser.save();
     console.log('User saved successfully:', savedUser);
 
-    return NextResponse.json({ message: 'User registered successfully' }, { status: 201 });
+    return NextResponse.json({ message: 'User registered successfully', email: savedUser.email }, { status: 201 });
   } catch (error) {
     console.error('Detailed registration error:', error);
     return NextResponse.json({ message: 'An error occurred during registration', error: error.toString() }, { status: 500 });

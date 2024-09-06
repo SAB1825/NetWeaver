@@ -26,7 +26,8 @@ export default function Register() {
       const data = await response.json();
 
       if (response.ok) {
-        router.push('/complete-profile');
+        // Redirect to complete-profile page with email as a query parameter
+        router.push(`/complete-profile?email=${encodeURIComponent(data.email)}`);
       } else {
         console.error('Registration error:', data);
         setError(data.message || 'Registration failed');

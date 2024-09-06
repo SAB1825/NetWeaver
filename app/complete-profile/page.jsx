@@ -16,10 +16,15 @@ export default function CompleteProfile() {
 
   useEffect(() => {
     if (status === "unauthenticated") {
-      router.push('/signin');
+      const email = searchParams.get('email');
+      if (!email) {
+        router.push('/signin');
+      } else {
+        setEmail(email);
+      }
     } else if (status === "authenticated") {
-      setName(session.user.name || searchParams.get('name') || '');
-      setEmail(session.user.email || searchParams.get('email') || '');
+      setName(session.user.name || '');
+      setEmail(session.user.email || '');
     }
   }, [session, status, searchParams, router]);
 
